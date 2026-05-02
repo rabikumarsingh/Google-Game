@@ -41,43 +41,48 @@
     <audio id="bg-music" loop>
       <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
+    <audio id="celebration-music">
+      <source src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" type="audio/mpeg">
+    </audio>
     <div id="audio-controls" title="Toggle Music">
       <span id="audio-status">🔇</span>
     </div>
 
     <script>
       const music = document.getElementById('bg-music');
+      const celebration = document.getElementById('celebration-music');
       const status = document.getElementById('audio-status');
       const controls = document.getElementById('audio-controls');
-      let interactionOccurred = false;
-
-      function startMusic() {
-        music.play().then(() => {
-          status.textContent = '🔊';
-          interactionOccurred = true;
-          document.removeEventListener('click', startMusic);
-          document.removeEventListener('touchstart', startMusic);
-        }).catch(err => {
-          console.log('Playback blocked, waiting for user interaction');
-        });
-      }
-
-      // Try playing immediately
-      startMusic();
-
-      // Fallback for browser policy
-      document.addEventListener('click', startMusic);
-      document.addEventListener('touchstart', startMusic);
+      
+      window.gameMusic = {
+        startBg: () => {
+          celebration.pause();
+          celebration.currentTime = 0;
+          music.play().then(() => {
+            status.textContent = '🔊';
+          }).catch(err => console.log('Music blocked'));
+        },
+        playCelebration: () => {
+          music.pause();
+          celebration.play().then(() => {
+            status.textContent = '🎉';
+          }).catch(err => console.log('Celebration blocked'));
+        },
+        toggle: () => {
+          if (music.paused && celebration.paused) {
+            music.play();
+            status.textContent = '🔊';
+          } else {
+            music.pause();
+            celebration.pause();
+            status.textContent = '🔇';
+          }
+        }
+      };
 
       controls.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (music.paused) {
-          music.play();
-          status.textContent = '🔊';
-        } else {
-          music.pause();
-          status.textContent = '🔇';
-        }
+        window.gameMusic.toggle();
       });
     </script>
   </body>
