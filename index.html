@@ -58,6 +58,7 @@
         startBg: () => {
           celebration.pause();
           celebration.currentTime = 0;
+          music.playbackRate = 1;
           music.play().then(() => {
             status.textContent = '🔊';
           }).catch(err => console.log('Music blocked'));
@@ -76,6 +77,15 @@
             music.pause();
             celebration.pause();
             status.textContent = '🔇';
+          }
+        },
+        setStage: (stage) => {
+          if (stage > 20) {
+            music.playbackRate = 1.0;
+          } else if (stage > 10) {
+            music.playbackRate = 1.2;
+          } else {
+            music.playbackRate = 1.4;
           }
         }
       };
