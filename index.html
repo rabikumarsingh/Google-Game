@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+    <title>Voxel Countdown</title>
+    <script type="module" crossorigin src="/assets/index-COJ9Yb5L.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-SUy4xMqB.css">
+    <style>
+      #audio-controls {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+      #audio-controls:hover {
+        background: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
+      }
+      #audio-status {
+        color: white;
+        font-size: 12px;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <audio id="bg-music" loop>
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    <div id="audio-controls" title="Toggle Music">
+      <span id="audio-status">🔇</span>
+    </div>
+
+    <script>
+      const music = document.getElementById('bg-music');
+      const status = document.getElementById('audio-status');
+      const controls = document.getElementById('audio-controls');
+      let interactionOccurred = false;
+
+      function startMusic() {
+        music.play().then(() => {
+          status.textContent = '🔊';
+          interactionOccurred = true;
+          document.removeEventListener('click', startMusic);
+          document.removeEventListener('touchstart', startMusic);
+        }).catch(err => {
+          console.log('Playback blocked, waiting for user interaction');
+        });
+      }
+
+      // Try playing immediately
+      startMusic();
+
+      // Fallback for browser policy
+      document.addEventListener('click', startMusic);
+      document.addEventListener('touchstart', startMusic);
+
+      controls.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (music.paused) {
+          music.play();
+          status.textContent = '🔊';
+        } else {
+          music.pause();
+          status.textContent = '🔇';
+        }
+      });
+    </script>
+  </body>
+</html>
+
